@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import VerifiedUser from '@material-ui/icons/VerifiedUser';
-import TransactionButton from '../../../TransactionButton';
+import TransactionButton from '../../../common/TransactionButton';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -247,7 +247,7 @@ class ClaimReportDialog extends Component {
 				
 				{this.state.reportStatus==="1"?(
 				<TransactionButton 
-                  buttonInitial='Claim Pet Found...'
+                  readyText='Claim Pet Found...'
                  method = { this.props.resolverContract.methods.claimLostReport(this.props.petId,this.props.hydroId)}
                  onConfirmation={() => {
                     this.props.handleClose()
