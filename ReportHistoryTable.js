@@ -5,18 +5,24 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
 
+const circularProgressStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  };
+  
 export default class ReportHistoryTable extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {events:[],
-			petId:props.petId
+			petId:props.petId,
+			loading:true
 					
 			
 		}
@@ -30,8 +36,8 @@ export default class ReportHistoryTable extends React.Component {
 		var month = months[date.getMonth()];
 		var day = ('0' + date.getDate() ).substr(-2);
 		var hour = date.getHours();
-		var min = date.getMinutes();
-		var sec = date.getSeconds();
+		var min = ('0' + date.getMinutes() ).substr(-2);
+		var sec = ('0' + date.getSeconds() ).substr(-2); 
 		var time = month + ' ' + day + ' ' + year + ', ' + hour + ':' + min + ':' + sec ;
 		return time;
 	}
@@ -41,7 +47,9 @@ export default class ReportHistoryTable extends React.Component {
 	componentDidMount() {
 	
 		var _this = this;
-		var shaPetId = this.props.w3w.web3js.utils.sha3(this.state.petId);
+		//var shaPetId = this.props.w3w.web3js.utils.sha3(this.state.petId);
+		var shaPetId = this.props.w3w.web3js.utils.sha3(this.props.w3w.web3js.eth.abi.encodeParameter("string",this.state.petId));
+		debugger;
 		this.props.resolverContract.getPastEvents('LostReportChanged', 
 			{
 				filter: {},
@@ -54,6 +62,7 @@ export default class ReportHistoryTable extends React.Component {
 							
 				_this.setState({
 					events: l,
+					loading:false
 				})
 			}
 		)
@@ -71,7 +80,7 @@ export default class ReportHistoryTable extends React.Component {
         <Dialog
           open={this.props.open}
 		  fullScreen={true}
-          TransitionComponent={Transition}
+          //TransitionComponent={Transition}
           onClose={this.handleClose}
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
@@ -80,14 +89,14 @@ export default class ReportHistoryTable extends React.Component {
             {"Report history of Pet ID:"+this.props.petId+", Name: "+this.props.name}
           </DialogTitle>
           <DialogContent>
-		  
+		  <div>
 			<Table>
 				<TableHead>
 					<TableRow >
 						<TableCell>Date</TableCell>
 						<TableCell >Status</TableCell>
 						<TableCell >Scene Desc</TableCell>
-						<TableCell >Claimer</TableCell>
+						<TableCell >Claimer EIN</TableCell>
 						<TableCell ><MoneyIcon/></TableCell>
 					</TableRow>
 				</TableHead>
@@ -96,15 +105,17 @@ export default class ReportHistoryTable extends React.Component {
 					
 						{this.state.events.map( ev => 
 							<TableRow key={this.props.petId+'_'+ev.returnValues.date}>
-								<TableCell>{this.formatTimestamp(ev.returnValues.date)}</TableCell>
-								<TableCell>{this.props.getStatusTxt(ev.returnValues.lostReport.status)}</TableCell>
-								<TableCell>{ev.returnValues.lostReport.sceneDesc}</TableCell>
-								<TableCell>{ev.returnValues.lostReport.claimerHydroId}</TableCell>
-								<TableCell>{ev.returnValues.lostReport.reward}</TableCell>
+								<TableCell>{this.formatTimestamp(ev.returnValues[2])}</TableCell>
+								<TableCell>{this.props.getStatusTxt(ev.returnValues[3])}</TableCell>
+								<TableCell>{ev.returnValues[4]}</TableCell>
+								<TableCell>{ev.returnValues[6]!==0?ev.returnValues[6]:''}</TableCell>
+								<TableCell>{ev.returnValues[5]}</TableCell>
 							</TableRow>
 						)}
 				</TableBody>
 			</Table>
+			{this.state.loading && <CircularProgress size={68} style={circularProgressStyle} />}
+			</div>
 		</DialogContent>
 		 <DialogActions>
 		  
@@ -114,6 +125,7 @@ export default class ReportHistoryTable extends React.Component {
           
           </DialogActions>
 		</Dialog>
+		
 		</div>
     )
   }
