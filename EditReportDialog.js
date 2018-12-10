@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
-import TransactionButton from '../../../TransactionButton';
+import TransactionButton from '../../../common/TransactionButton';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -217,8 +217,8 @@ class EditReportDialog extends Component {
 		  }
            {this.state.reportStatus==="0" || this.state.reportStatus==="3" || this.state.reportStatus==="4"?(
                 <TransactionButton 
-                  buttonInitial='Submit New Report Details...'
-                 method = { this.props.resolverContract.methods.putLostReport(this.props.hydroId,this.props.petId,this.state.reportSceneDescription, this.state.reportReward)}
+                  readyText='Submit New Report Details...'
+                 method = {() => this.props.resolverContract.methods.putLostReport(this.props.hydroId,this.props.petId,this.state.reportSceneDescription, this.state.reportReward)}
                  onConfirmation={() => {
 					this.props.handleClose()
                   }}
@@ -230,15 +230,15 @@ class EditReportDialog extends Component {
 				{this.state.reportStatus==="1"?(
 				<div>
 				 <TransactionButton 
-                  buttonInitial='Update Report...'
-                 method = { this.props.resolverContract.methods.updateLostReport(this.props.hydroId,this.props.petId,this.state.reportSceneDescription, this.state.reportReward)}
+                  readyText='Update Report...'
+                 method = { () => this.props.resolverContract.methods.updateLostReport(this.props.hydroId,this.props.petId,this.state.reportSceneDescription, this.state.reportReward)}
                  onConfirmation={() => {
 					this.props.handleClose()
                   }}
                 />
 				<TransactionButton 
-                  buttonInitial='Remove Report...'
-                 method = { this.props.resolverContract.methods.removeLostReport(this.props.hydroId,this.props.petId)}
+                  readyText='Remove Report...'
+                 method = {() =>  this.props.resolverContract.methods.removeLostReport(this.props.hydroId,this.props.petId)}
                  onConfirmation={() => {
                     this.props.handleClose()
                   }}
@@ -249,14 +249,24 @@ class EditReportDialog extends Component {
 					//Found by other can only transit to confirm or pending
 				}
 				{this.state.reportStatus==="2"?(
+				<div>
 				<TransactionButton 
-                  buttonInitial='Confirm Reward...'
-                 method = { this.props.resolverContract.methods.confirmReward(this.props.hydroId,this.props.petId)}
+                  readyText='Confirm Reward...'
+                 method = { () => this.props.resolverContract.methods.confirmReward(this.props.hydroId,this.props.petId)}
                  onConfirmation={() => {
                     this.props.handleClose()
                   }}
                 />
+				<TransactionButton 
+                  readyText=' Wrong Alert!  Revert Pet Found...'
+                 method = { this.props.resolverContract.methods.unclaimLostReport(this.props.petId)}
+                 onConfirmation={() => {
+                    this.handleClickUnclaimReport()
+                  }}
+                />
+				</div>
 				):''}
+				
 			<Button onClick={this.props.handleClose} color="primary">
               Close
             </Button>
