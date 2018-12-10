@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
-import TransactionButton from '../../../TransactionButton';
+import TransactionButton from '../../../common/TransactionButton';
 import Info from '@material-ui/icons/Info';
 import AboutDialog from './AboutDialog';
 
@@ -25,6 +25,7 @@ export default class EditAccountDialog extends Component {
   
   
   componentDidMount(){
+	  debugger;
 	  this.props.resolverContract.methods.getOwner(this.props.hydroId).call()
     .then(anOwner =>{
 	  this.setState(
@@ -101,9 +102,9 @@ export default class EditAccountDialog extends Component {
 			  <div>
 			  </div>
 			   <TransactionButton
-                  buttonInitial='Update account details...'
+                  readyText='Update account details...'
                
-				 method = { this.props.resolverContract.methods.updateOwner(this.props.hydroId,this.state.contactName,this.state.contactData)}
+				 method = { () => this.props.resolverContract.methods.updateOwner(this.props.hydroId,this.state.contactName,this.state.contactData)}
                  onConfirmation={() => {
 					this.props.handleSubmit()
                   }}
@@ -117,8 +118,7 @@ export default class EditAccountDialog extends Component {
 						/>
 		 
 		  
-			
-	  
+  
 				
             </div>
    
