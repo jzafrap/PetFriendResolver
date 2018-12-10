@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
-import TransactionButton from '../../../TransactionButton';
+import TransactionButton from '../../../common/TransactionButton';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -233,22 +233,22 @@ class EditPetDialog extends Component {
 		  {this.props.petId===''?(
 			 
            <TransactionButton
-                  buttonInitial='Submit new Pet Details...'
+                  readyText='Submit new Pet Details...'
                
-				 method = { this.props.resolverContract.methods.addPet(this.props.hydroId,this.state.petId,this.state.petType,this.state.name,this.state.desc,this.state.imgUrl)}
+				 method = { () => this.props.resolverContract.methods.addPet(this.props.hydroId,this.state.petId,this.state.petType,this.state.name,this.state.desc,this.state.imgUrl)}
                  onConfirmation={() => {
 					this.props.handleClose()
                   }}
-		  />
+			/>
 		  ):(
 			   <TransactionButton
-                  buttonInitial='Submit updated Pet Details...'
+                  readyText='Submit updated Pet Details...'
                
-				 method = { this.props.resolverContract.methods.updatePet(this.props.hydroId,this.state.petId,this.state.petType,this.state.name,this.state.desc,this.state.imgUrl)}
+				 method = {() => this.props.resolverContract.methods.updatePet(this.props.hydroId,this.state.petId,this.state.petType,this.state.name,this.state.desc,this.state.imgUrl)}
                  onConfirmation={() => {
 					this.props.handleClose()
                   }}
-		  />
+				/>
 		  )}
 			<Button onClick={this.props.handleClose} color="primary">
               Close
