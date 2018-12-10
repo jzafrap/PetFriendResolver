@@ -1,5 +1,4 @@
 import React from 'react';
-//0x43b927b052475f18b71bd93dc19e51d297c768d9 address contract in rinkeby network
 
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -20,7 +19,7 @@ import yellow from '@material-ui/core/colors/yellow';
 
 import ClaimReportDialog from './ClaimReportDialog';
 import Tooltip from '@material-ui/core/Tooltip';
-import TransactionButton from '../../../TransactionButton';
+import TransactionButton from '../../../common/TransactionButton';
 
 
 
@@ -36,6 +35,7 @@ export default class LostReportCardv2 extends React.Component {
 							name:'',
 							sceneDesc:'',
 							desc:'',
+							claimerHydroId:'',
 							//petIdentification={this.props.petId}
 							contactName:'',
 							contactData:'',
@@ -63,6 +63,7 @@ export default class LostReportCardv2 extends React.Component {
 					name:pt.name,
 					sceneDesc:lr.sceneDesc,
 					desc:pt.desc,
+					claimerHydroId:lr.claimerHydroId,
 					//petIdentification={this.props.petId}
 					contactName:ow.contactName,
 					contactData:ow.contactData,
@@ -140,9 +141,9 @@ export default class LostReportCardv2 extends React.Component {
         </Button>
 		):''}
 		
-		{this.state.reportStatus==="2" && this.state.hydroId === this.state.ownerId?(
+		{this.state.reportStatus==="2" && this.state.hydroId === this.state.claimerHydroId?(
     	<TransactionButton 
-                  buttonInitial=' Sorry!  Unreport Pet Found'
+                  readyText=' Sorry!  Unreport Pet Found'
                  method = { this.props.resolverContract.methods.unclaimLostReport(this.props.petId)}
                  onConfirmation={() => {
                     this.handleClickUnclaimReport()
@@ -164,11 +165,7 @@ export default class LostReportCardv2 extends React.Component {
 						hydroId={this.props.hydroId}
 						petId={this.props.petId}
 						ownerId={this.state.ownerId}
-						
-							
-							
 			/>
-	
         
       </CardActions>
     </Card>
